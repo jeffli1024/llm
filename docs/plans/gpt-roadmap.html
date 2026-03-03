@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT Mastery Roadmap</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .root {
+      background: #0a0a0f;
+      min-height: 100vh;
+      color: #e8e8f0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 0;
+    }
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .header {
+      padding: 52px 0 32px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: #00e5ff;
+      border: 1px solid #00e5ff;
+      padding: 4px 14px;
+      border-radius: 2px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin: 0;
+    }
+    .accent { color: #00e5ff; text-shadow: 0 0 40px rgba(0,229,255,0.4); }
+    .subtitle {
+      margin-top: 12px;
+      color: #666680;
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+    .progress-box {
+      background: #111118;
+      border: 1px solid #1e1e2e;
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .progress-label {
+      font-family: monospace;
+      font-size: 11px;
+      color: #666680;
+      white-space: nowrap;
+    }
+    .progress-track {
+      flex: 1;
+      min-width: 120px;
+      height: 6px;
+      background: #1e1e2e;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00e5ff, #c77dff);
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+    .progress-count {
+      font-family: monospace;
+      font-size: 12px;
+      color: #00e5ff;
+      white-space: nowrap;
+    }
+    .btn {
+      font-family: monospace;
+      font-size: 11px;
+      background: transparent;
+      border: 1px solid #1e1e2e;
+      color: #666680;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-resources {
+      border-color: rgba(0,229,255,0.2);
+      color: #00e5ff;
+    }
+    .resources-panel {
+      background: #111118;
+      border: 1px solid #1e1e2e;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+    .resources-panel.hidden { display: none; }
+    .resources-title {
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #00e5ff;
+      margin-bottom: 14px;
+    }
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .resource-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid #1e1e2e;
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .resource-title { font-weight: 700; font-size: 0.82rem; margin-bottom: 3px; }
+    .resource-desc { font-family: monospace; font-size: 0.75rem; color: #666680; line-height: 1.4; }
+    .phases { display: flex; flex-direction: column; gap: 36px; padding-bottom: 60px; }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .phase-label {
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .phase-title { font-size: 1.2rem; font-weight: 700; margin: 0; }
+    .phase-timeline {
+      font-family: monospace;
+      font-size: 11px;
+      color: #666680;
+      margin-left: auto;
+    }
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .task-card {
+      background: #13131f;
+      border: 1px solid #1e1e2e;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .task-card.done { opacity: 0.55; }
+    .task-done-check {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .task-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .task-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+    .task-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; }
+    .task-desc {
+      font-size: 0.76rem;
+      color: #666680;
+      line-height: 1.5;
+      font-family: monospace;
+    }
+    .task-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .task-tag {
+      font-family: monospace;
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 99px;
+      opacity: 0.8;
+    }
+    .task-practice {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+    }
+    .task-practice.hidden { display: none; }
+    .practice-title {
+      font-family: monospace;
+      font-size: 10px;
+      color: #00e5ff;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .practice-item {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: #9090b0;
+      line-height: 1.7;
+      display: flex;
+      gap: 6px;
+    }
+    .practice-arrow { flex-shrink: 0; }
+    .task-hint {
+      font-family: monospace;
+      font-size: 9px;
+      color: #444460;
+      margin-top: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="root">
+    <div class="grid-bg"></div>
+    <div class="container">
+      <div class="header">
+        <div class="badge">🎯 PRACTICE-FIRST CURRICULUM</div>
+        <h1>GPT <span class="accent">Mastery</span> Roadmap</h1>
+        <p class="subtitle">Senior Engineer → Training Tech Lead &nbsp;|&nbsp; Click tasks to reveal hands-on practice</p>
+      </div>
+
+      <div class="progress-box">
+        <span class="progress-label">OVERALL PROGRESS</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <span class="progress-count" id="progressCount">0 / 30 done</span>
+        <button class="btn" id="resetBtn">↺ Reset</button>
+        <button class="btn btn-resources" id="resourcesBtn">📚 Resources</button>
+      </div>
+
+      <div class="resources-panel hidden" id="resourcesPanel">
+        <div class="resources-title">// ESSENTIAL READING</div>
+        <div class="resources-grid">
+          <div class="resource-card"><div class="resource-title">Attention Is All You Need</div><div class="resource-desc">Vaswani et al. 2017 — the original transformer paper</div></div>
+          <div class="resource-card"><div class="resource-title">nanoGPT — Karpathy</div><div class="resource-desc">github.com/karpathy/nanoGPT — GPT from scratch in 300 lines</div></div>
+          <div class="resource-card"><div class="resource-title">The Illustrated Transformer</div><div class="resource-desc">jalammar.github.io — best visual intuition available</div></div>
+          <div class="resource-card"><div class="resource-title">HuggingFace Transformers</div><div class="resource-desc">huggingface.co/docs — practical fine-tuning API</div></div>
+          <div class="resource-card"><div class="resource-title">Scaling Laws (Kaplan 2020)</div><div class="resource-desc">arxiv 2001.08361 — compute-optimal training</div></div>
+          <div class="resource-card"><div class="resource-title">Chinchilla (Hoffmann 2022)</div><div class="resource-desc">arxiv 2203.15556 — revised scaling laws</div></div>
+          <div class="resource-card"><div class="resource-title">InstructGPT / RLHF Paper</div><div class="resource-desc">arxiv 2203.02155 — alignment via human feedback</div></div>
+          <div class="resource-card"><div class="resource-title">DeepSpeed & Megatron-LM</div><div class="resource-desc">Distributed training at scale by Microsoft & NVIDIA</div></div>
+        </div>
+      </div>
+
+      <div class="phases" id="phasesContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    const phases = [
+      { id:1, color:"#00e5ff", label:"PHASE 01", title:"Foundations — How Transformers Work", timeline:"2–4 weeks", tasks:[
+        { icon:"🔢", name:"Linear Algebra & Probability Refresh", desc:"Matrix multiply, softmax, cross-entropy loss — verify the math is locked in.", tags:["math","prerequisite"], practice:["Implement softmax from scratch (numpy only)","Compute cross-entropy loss on a toy 5-word vocab","Visualize attention score matrices as heatmaps","Derive the gradient of cross-entropy w.r.t. logits by hand"] },
+        { icon:"📖", name:"Read 'Attention Is All You Need'", desc:"Read end-to-end, annotate every equation. Understand why RNNs were replaced.", tags:["theory","foundational"], practice:["Redraw the full architecture from memory after reading","List 3 key improvements over seq2seq + RNN","Explain multi-head attention to a rubber duck","Implement all 3 attention variants: self, cross, masked"] },
+        { icon:"⚙️", name:"Build a Tokenizer from Scratch", desc:"Implement BPE (Byte-Pair Encoding) — the foundation of GPT token vocabulary.", tags:["code","nlp"], practice:["Implement BPE in ~100 lines of Python","Train it on a small text corpus","Compare output vs tiktoken cl100k on same input","Analyze why subword beats char/word-level tokenization"] },
+        { icon:"🧠", name:"Implement Self-Attention (no libraries)", desc:"Build scaled dot-product attention in pure PyTorch — Q, K, V from scratch.", tags:["code","core"], practice:["Write single-head attention using raw tensor ops only","Add causal masking for decoder-only (GPT-style) attention","Extend to multi-head, verify tensor shapes at each step","Benchmark your impl vs F.scaled_dot_product_attention"] },
+        { icon:"🏗️", name:"Build a Mini GPT (nanoGPT style)", desc:"Implement character-level GPT: Embedding → Transformer blocks → LM head.", tags:["code","project"], practice:["Follow Karpathy's nanoGPT (~300 lines of PyTorch)","Train on Shakespeare dataset to perplexity < 2.0","Compare learned vs sinusoidal positional encodings","Generate text and qualitatively analyze failure modes"] },
+        { icon:"📊", name:"Understand Training Dynamics", desc:"Loss curves, gradient flow, LR schedules, warmup, cosine decay.", tags:["training","theory"], practice:["Plot loss curves for 5 different LR schedules on nanoGPT","Log gradient norms per layer — find vanishing/exploding gradients","Implement gradient clipping, observe training stabilization","Reproduce a known loss curve from a paper"] }
+      ]},
+      { id:2, color:"#ff6b35", label:"PHASE 02", title:"Intermediate — Fine-Tuning & Scaling", timeline:"4–6 weeks", tasks:[
+        { icon:"🤗", name:"Hugging Face Transformers Deep Dive", desc:"Load, inspect, run GPT-2, LLaMA-2, Mistral. Understand every config file.", tags:["tools","practical"], practice:["Load GPT-2 and print every named parameter with shape","Count parameters manually, verify vs model.num_parameters()","Modify num_heads and observe output quality changes","Trace a forward pass with hooks on every layer"] },
+        { icon:"🎯", name:"Full Fine-Tuning on Custom Dataset", desc:"Fine-tune GPT-2 on a domain-specific dataset with proper train/val splits.", tags:["code","fine-tuning"], practice:["Curate a 10K–100K token domain corpus (code/legal/medical)","Fine-tune GPT-2 (124M) for 3 epochs with early stopping","Track perplexity, BLEU, and qualitative output per epoch","Compare base model vs fine-tuned on 20 domain-specific prompts"] },
+        { icon:"💡", name:"LoRA & Parameter-Efficient Fine-Tuning", desc:"Train less than 1% of parameters while matching full fine-tune quality.", tags:["efficiency","fine-tuning"], practice:["Apply LoRA to GPT-2 using HuggingFace peft library","Compare full fine-tune vs LoRA on same dataset","Ablate r=4, r=8, r=16 — plot quality vs param count","Try QLoRA for 4-bit quantized training on a 7B model"] },
+        { icon:"📏", name:"Scaling Laws & Model Sizing", desc:"Chinchilla laws: balance parameters vs tokens for compute-optimal training.", tags:["theory","architecture"], practice:["Read Kaplan 2020 + Hoffmann 2022 (Chinchilla) papers","Given a fixed FLOP budget, compute optimal N and D","Build a spreadsheet: GPU hours → optimal model size","Verify predictions against published open-source model results"] },
+        { icon:"🔍", name:"Evaluation & Benchmarking", desc:"MMLU, HellaSwag, HumanEval, perplexity — measure model quality rigorously.", tags:["evaluation","mlops"], practice:["Run lm-evaluation-harness on your fine-tuned model","Implement perplexity calculation from scratch and verify","Build a qualitative eval rubric with 20+ diverse test prompts","Create a model card documenting all quantitative results"] },
+        { icon:"🗃️", name:"Data Engineering for LLM Training", desc:"Web scraping, deduplication, quality filtering, tokenization at scale.", tags:["data","engineering"], practice:["Build: raw text → deduplicated → quality filtered → tokenized","Implement MinHash deduplication on a 1GB text corpus","Measure perplexity delta: clean data vs noisy data","Profile pipeline throughput: tokens/second end-to-end"] }
+      ]},
+      { id:3, color:"#7fff6b", label:"PHASE 03", title:"Advanced — RLHF, Alignment & Scale", timeline:"6–8 weeks", tasks:[
+        { icon:"🤖", name:"Instruction Tuning (SFT)", desc:"Supervised fine-tuning on instruction-response pairs — base of ChatGPT-style models.", tags:["alignment","fine-tuning"], practice:["Fine-tune on Alpaca or OpenHermes dataset","Implement system/user/assistant prompt templates","Ablate: 100 vs 1K vs 10K SFT examples — find the cliff","Evaluate instruction-following using GPT-4-as-judge"] },
+        { icon:"🏆", name:"Reward Modeling", desc:"Train a reward model scoring response quality — the critic that drives RLHF.", tags:["rlhf","alignment"], practice:["Train a Bradley-Terry reward model on preference pairs","Use Anthropic HH-RLHF or OpenAI summarize-from-feedback dataset","Measure reward model accuracy on held-out preference pairs","Find and document reward hacking failure examples"] },
+        { icon:"🎮", name:"PPO Fine-Tuning (Full RLHF Loop)", desc:"Implement the complete RLHF loop: policy + reward model + PPO update.", tags:["rlhf","advanced"], practice:["Use TRL library to run PPO on a small language model","Monitor KL divergence from reference policy during training","Tune KL coefficient — balance reward vs staying on-distribution","A/B compare SFT vs RLHF outputs on 50 diverse prompts"] },
+        { icon:"⚡", name:"Distributed Training (DDP + FSDP)", desc:"Data Parallel, Tensor Parallel, Pipeline Parallel across multiple GPUs.", tags:["infra","scale"], practice:["Convert nanoGPT to DistributedDataParallel (DDP)","Train on 2–4 GPUs, measure linear scaling efficiency","Implement FSDP for memory-efficient weight sharding","Profile GPU utilization with PyTorch Profiler"] },
+        { icon:"🚀", name:"DeepSpeed ZeRO & Mixed Precision", desc:"ZeRO Stage 1/2/3, bf16 training, gradient checkpointing for billion-scale models.", tags:["infra","efficiency"], practice:["Configure DeepSpeed ZeRO Stage 2 for a 7B model","Compare peak memory: fp32 vs fp16 vs bf16 training","Enable gradient checkpointing — measure memory/speed tradeoff","Train a 1.3B model on 4 GPUs using ZeRO-3"] },
+        { icon:"🔬", name:"Interpretability & Model Analysis", desc:"Attention head analysis, probing classifiers, logit lens — what did the model learn?", tags:["research","interpretability"], practice:["Visualize attention patterns across all heads and layers","Implement a probing classifier on intermediate representations","Use logit lens to track prediction formation layer by layer","Identify induction heads in your trained GPT"] }
+      ]},
+      { id:4, color:"#c77dff", label:"PHASE 04", title:"Expert — Production & Optimization", timeline:"6–8 weeks", tasks:[
+        { icon:"⚙️", name:"Inference Optimization", desc:"KV cache, speculative decoding, continuous batching, FlashAttention — max throughput.", tags:["inference","production"], practice:["Implement KV cache from scratch — measure latency speedup","Benchmark FlashAttention vs standard attention on 4K sequences","Set up vLLM and measure tokens/sec vs naive inference","Implement speculative decoding with a small draft model"] },
+        { icon:"📦", name:"Quantization (INT8, INT4, GGUF)", desc:"Reduce model size 4–8x with minimal quality loss: GPTQ, AWQ, llama.cpp.", tags:["efficiency","deployment"], practice:["Apply GPTQ 4-bit quantization to a 7B model","Compare perplexity: fp16 → int8 → int4 → GGUF","Run GGUF model with llama.cpp, measure CPU inference speed","Build a quality vs size Pareto curve across quant levels"] },
+        { icon:"🌐", name:"Serving Infrastructure", desc:"vLLM, TGI, Triton server — deploy with production SLAs and autoscaling.", tags:["infra","production"], practice:["Deploy a model with vLLM, expose OpenAI-compatible API","Load test with locust: P50/P95/P99 latency at varying QPS","Implement dynamic batching — measure throughput improvement","Set up autoscaling based on request queue depth"] },
+        { icon:"🔁", name:"Continual Pre-training", desc:"Update a model on new domain data without catastrophic forgetting.", tags:["training","advanced"], practice:["Fine-tune a base model on medical or legal domain data","Measure catastrophic forgetting on original MMLU benchmarks","Implement Elastic Weight Consolidation — compare retention","Use replay buffers to maintain general capability"] },
+        { icon:"🛡️", name:"Safety & Red-Teaming", desc:"Jailbreaks, prompt injection, constitutional AI — production safety engineering.", tags:["safety","alignment"], practice:["Build a red-team eval suite with 50+ adversarial prompts","Implement a refusal classifier on top of your model","Try DPO (Direct Preference Optimization) as RLHF alternative","Measure safety vs helpfulness tradeoff empirically on eval set"] },
+        { icon:"📈", name:"MLOps for LLMs", desc:"Experiment tracking, model registry, data versioning, CI/CD for model pipelines.", tags:["mlops","production"], practice:["Set up W&B or MLflow tracking for all experiments","Build a model card template with standardized eval metrics","Implement automated regression testing in CI for model quality","Create a data versioning pipeline with DVC"] }
+      ]},
+      { id:5, color:"#ffd700", label:"PHASE 05", title:"Tech Lead — Architecture, Strategy & Team", timeline:"Ongoing", tasks:[
+        { icon:"🏛️", name:"Architecture Decision Records", desc:"Lead architectural choices: base model, fine-tune vs RAG vs train from scratch.", tags:["leadership","architecture"], practice:["Write an ADR for a mock LLM project (base model selection)","Build a decision matrix: cost/quality/latency for 5 model options","Document compute budget planning for a 7B model training run","Create a risk register for training failure modes"] },
+        { icon:"💰", name:"Compute Cost Modeling", desc:"GPU hour budgeting, spot vs reserved, A100/H100 tradeoffs, pre-training cost estimation.", tags:["leadership","strategy"], practice:["Build a spreadsheet: full cost to train a 7B model from scratch","Compare A100 80GB vs H100 utilization for your workload","Model spot instance interruption risk into your schedule","Calculate cost per 1M tokens for 3 different model sizes"] },
+        { icon:"👥", name:"Team Structure & Roles", desc:"ML engineers, data engineers, researchers, infra — structure a training team.", tags:["leadership","management"], practice:["Design a 6-person LLM team org chart with RACI matrix","Write job descriptions for ML research engineer + data pipeline engineer","Create a 30/60/90 day onboarding plan for new ML engineers","Define a team playbook for a full training run end-to-end"] },
+        { icon:"🔭", name:"Research Roadmap & Literature Tracking", desc:"Stay current with arXiv, synthesize papers into actionable insights for your team.", tags:["research","leadership"], practice:["Read and summarize 2 arXiv LLM papers per week for 1 month","Build a paper reading group curriculum for your team","Write a 1-page tech radar: adopt / explore / hold","Present a 'State of LLMs' talk to engineering leadership"] },
+        { icon:"🎓", name:"Capstone: Lead a Full Training Run", desc:"End-to-end ownership: data → train → eval → deploy. Real or simulated.", tags:["capstone","project"], practice:["Scope a training project: define objectives, data, compute, timeline","Execute with a team of 2–3, document every key decision","Write a post-mortem: what worked, what failed, what you'd change","Publish model + training details on HuggingFace Hub with model card"] },
+        { icon:"🌍", name:"Contribute to Open Source", desc:"PRs to Transformers, DeepSpeed, vLLM — credibility comes from real contributions.", tags:["community","expertise"], practice:["File 3 meaningful issues or PRs in major LLM repos","Write a technical blog post on something you learned deeply","Give a talk at an internal or external ML meetup","Review a junior engineer's LLM training code with written feedback"] }
+      ]}
+    ];
+
+    let expanded = {};
+    let done = {};
+
+    const totalTasks = phases.reduce((s, p) => s + p.tasks.length, 0);
+
+    function updateProgress() {
+      const doneCnt = Object.values(done).filter(Boolean).length;
+      const pct = totalTasks > 0 ? (doneCnt / totalTasks * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressCount').textContent = doneCnt + ' / ' + totalTasks + ' done';
+    }
+
+    function toggle(id) {
+      if (!expanded[id]) {
+        expanded[id] = true;
+      } else if (!done[id]) {
+        done[id] = true;
+      } else {
+        expanded[id] = false;
+        done[id] = false;
+      }
+      renderTasks();
+      updateProgress();
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('phasesContainer');
+      container.innerHTML = phases.map(phase => {
+        const phaseLabelStyle = `background: ${phase.color}18; color: ${phase.color}`;
+        return `
+          <div>
+            <div class="phase-header">
+              <span class="phase-label" style="${phaseLabelStyle}">${phase.label}</span>
+              <h2 class="phase-title">${phase.title}</h2>
+              <span class="phase-timeline">${phase.timeline}</span>
+            </div>
+            <div class="tasks-grid">
+              ${phase.tasks.map((task, ti) => {
+                const id = `p${phase.id}-t${ti}`;
+                const isExp = expanded[id];
+                const isDone = done[id];
+                const borderColor = isExp ? phase.color + '44' : '#1e1e2e';
+                const hint = isDone ? '✓ done — click to undo' : isExp ? '▴ click again to mark complete' : '▾ click to expand practice';
+                return `
+                  <div class="task-card ${isExp ? 'expanded' : ''} ${isDone ? 'done' : ''}"
+                    data-id="${id}"
+                    style="border-color: ${borderColor}; border-left: 3px solid ${phase.color}">
+                    ${isDone ? `<span class="task-done-check" style="color: ${phase.color}">✓</span>` : ''}
+                    <div class="task-header">
+                      <span class="task-icon">${task.icon}</span>
+                      <span class="task-name">${task.name}</span>
+                    </div>
+                    <div class="task-desc">${task.desc}</div>
+                    <div class="task-tags">
+                      ${task.tags.map(t => `<span class="task-tag" style="border: 1px solid ${phase.color}44; color: ${phase.color}">${t}</span>`).join('')}
+                    </div>
+                    <div class="task-practice ${isExp ? '' : 'hidden'}">
+                      <div class="practice-title">HANDS-ON PRACTICE:</div>
+                      ${task.practice.map(p => `<div class="practice-item"><span class="practice-arrow" style="color: ${phase.color}">→</span>${p}</div>`).join('')}
+                    </div>
+                    <div class="task-hint">${hint}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.task-card').forEach(card => {
+        card.addEventListener('click', () => toggle(card.dataset.id));
+      });
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      expanded = {};
+      done = {};
+      renderTasks();
+      updateProgress();
+    });
+
+    document.getElementById('resourcesBtn').addEventListener('click', () => {
+      document.getElementById('resourcesPanel').classList.toggle('hidden');
+    });
+
+    renderTasks();
+    updateProgress();
+  </script>
+</body>
+</html>

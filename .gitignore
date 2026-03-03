@@ -1,0 +1,38 @@
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# VS Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Other IDEs
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+*.secret
+
+.cursor/

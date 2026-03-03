@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT Training Mastery Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #0f1629;
+    --surface2: #141d35;
+    --border: #1e2d50;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --grid: rgba(0,229,255,0.03);
+
+    --p1: #00e5ff;
+    --p2: #34d399;
+    --p3: #a78bfa;
+    --p4: #ff6b35;
+    --p5: #f59e0b;
+    --p6: #f43f5e;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ambient glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -30vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 60vh;
+    background: radial-gradient(ellipse, rgba(0,229,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 80px 0 60px;
+    position: relative;
+  }
+
+  .header-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-label::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(38px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-dim);
+    background: var(--surface);
+  }
+
+  .badge.accent { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── SECTION TITLES ─── */
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-top: 72px;
+  }
+
+  .section-head h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+  }
+
+  .section-head .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+  }
+
+  /* ─── PHILOSOPHY TABLE ─── */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .principle {
+    background: var(--surface);
+    padding: 28px 32px;
+    transition: background 0.2s;
+  }
+
+  .principle:hover { background: var(--surface2); }
+
+  .principle-icon {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .principle h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .principle p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ─── TIMELINE OVERVIEW ─── */
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .tl-card {
+    background: var(--surface);
+    padding: 24px 26px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+  }
+
+  .tl-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--phase-color, var(--accent));
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .tl-card:hover { background: var(--surface2); }
+  .tl-card:hover::before { opacity: 1; }
+
+  .tl-phase {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--phase-color, var(--accent));
+    margin-bottom: 8px;
+  }
+
+  .tl-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .tl-project {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .tl-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── PHASE CARDS ─── */
+  .phase-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 2px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .phase-card:hover { border-color: var(--phase-color); }
+
+  .phase-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 36px 40px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .phase-num-badge {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border: 2px solid var(--phase-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--phase-color);
+    letter-spacing: 0.1em;
+  }
+
+  .phase-header-content { flex: 1; }
+
+  .phase-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--phase-color);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .phase-duration {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .phase-toggle {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    align-self: center;
+  }
+
+  .phase-card.open .phase-toggle {
+    border-color: var(--phase-color);
+    color: var(--phase-color);
+    transform: rotate(45deg);
+  }
+
+  .phase-body {
+    display: none;
+    padding: 0 40px 40px;
+    border-top: 1px solid var(--border);
+    margin-top: -1px;
+  }
+
+  .phase-card.open .phase-body { display: block; }
+
+  /* project goal box */
+  .project-goal {
+    background: var(--surface2);
+    border-left: 3px solid var(--phase-color);
+    padding: 20px 24px;
+    margin: 28px 0;
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .project-goal strong {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--phase-color);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 28px;
+  }
+
+  .col-block h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .col-block ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .col-block ul li {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .col-block ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--phase-color);
+    font-weight: 700;
+  }
+
+  .tasks-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .tasks-list li {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    padding: 10px 14px 10px 38px;
+    background: var(--surface2);
+    border: 1px solid transparent;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .tasks-list li:hover { border-color: var(--border); }
+
+  .tasks-list li .step-num {
+    position: absolute;
+    left: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--phase-color);
+    font-weight: 700;
+  }
+
+  .math-box {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .math-box .math-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent3);
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .math-box .math-content {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .milestone-box {
+    background: rgba(52,211,153,0.05);
+    border: 1px solid rgba(52,211,153,0.2);
+    padding: 16px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .milestone-box .ms-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent4);
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .milestone-box .ms-content {
+    font-size: 14px;
+    color: var(--accent4);
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  /* ─── TOOLS TABLE ─── */
+  .tools-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 48px;
+  }
+
+  .tools-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .tools-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .tools-table tr:hover td { background: var(--surface); }
+
+  .tools-table td:first-child {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ─── PAPERS ─── */
+  .papers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .paper-row {
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 0;
+  }
+
+  .paper-row > div {
+    padding: 16px 20px;
+    font-size: 13px;
+    border-right: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  .paper-row > div:last-child { border-right: none; }
+
+  .paper-phase {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .paper-title {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .paper-why { color: var(--text-muted); }
+
+  .paper-row:hover > div { background: var(--surface2); }
+
+  /* ─── COMPETENCY MAP ─── */
+  .competency-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .comp-col {
+    background: var(--surface);
+    padding: 28px;
+  }
+
+  .comp-col h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comp-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .comp-col ul li {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .comp-col ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+    font-size: 10px;
+  }
+
+  /* ─── RHYTHM ─── */
+  .rhythm-blocks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .rhythm-block {
+    background: var(--surface);
+    padding: 24px;
+  }
+
+  .rhythm-day {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .rhythm-block p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ─── READY SIGNALS ─── */
+  .signals {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 64px;
+  }
+
+  .signal {
+    background: var(--surface);
+    padding: 20px 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: background 0.15s;
+  }
+
+  .signal:hover { background: var(--surface2); }
+
+  .signal-check {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--accent4);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .signal p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-tagline {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .footer-tagline span { color: var(--accent); }
+
+  .footer-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 8px 0;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in { animation: fadeInUp 0.5s ease both; }
+
+  @media (max-width: 768px) {
+    .two-col, .timeline-grid, .competency-grid, .rhythm-blocks { grid-template-columns: 1fr; }
+    .principles { grid-template-columns: 1fr; }
+    .paper-row { grid-template-columns: 60px 1fr; }
+    .paper-why { display: none; }
+    .phase-header { padding: 24px; }
+    .phase-body { padding: 0 24px 24px; }
+    .wrap { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="fade-in">
+    <div class="header-label">Learning Roadmap · For Experienced Engineers</div>
+    <h1>GPT Training<br><span>Mastery</span></h1>
+    <p class="header-sub">From building your first attention head to leading a production LLM training team. Six phases, six real projects, no prerequisite theory dumps.</p>
+    <div class="header-meta">
+      <span class="badge accent">6 Phases</span>
+      <span class="badge">~6 Months</span>
+      <span class="badge">2–4 hrs/day</span>
+      <span class="badge">Project-First Learning</span>
+      <span class="badge">AI-Augmented</span>
+    </div>
+  </header>
+
+  <!-- PHILOSOPHY -->
+  <div class="section-head">
+    <span class="section-num">00</span>
+    <h2>Philosophy</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="principles">
+    <div class="principle">
+      <div class="principle-icon">⚡</div>
+      <h3>Project-First</h3>
+      <p>Every phase starts with a real deliverable. Theory is introduced only when your project forces you to need it — not as prerequisites you read before touching code.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">🤖</div>
+      <h3>AI-Augmented</h3>
+      <p>Cursor, Copilot, and Claude are first-class tools. Use them to go faster — but read every generated line. The goal is understanding, not completion.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">📊</div>
+      <h3>Measure Everything</h3>
+      <p>Log to Weights & Biases from day one. Intuition without metrics is guessing. This discipline is what makes you credible as a training lead.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">✍️</div>
+      <h3>Teach to Learn</h3>
+      <p>After each phase, write a brief explainer. A blog post, an internal doc, a Slack message. Explaining forces precision that reading alone never will.</p>
+    </div>
+  </div>
+
+  <!-- TIMELINE OVERVIEW -->
+  <div class="section-head">
+    <span class="section-num">01</span>
+    <h2>6-Phase Overview</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="timeline-grid">
+    <a class="tl-card" href="#phase1" style="--phase-color: var(--p1)">
+      <div class="tl-phase">Phase 01</div>
+      <div class="tl-title">Foundation: Tokens & Attention</div>
+      <div class="tl-project">Build a character-level GPT from scratch</div>
+      <div class="tl-duration">3–4 weeks</div>
+    </a>
+    <a class="tl-card" href="#phase2" style="--phase-color: var(--p2)">
+      <div class="tl-phase">Phase 02</div>
+      <div class="tl-title">GPT-2 Architecture Deep Dive</div>
+      <div class="tl-project">Replicate a GPT-2 training run</div>
+      <div class="tl-duration">4–5 weeks</div>
+    </a>
+    <a class="tl-card" href="#phase3" style="--phase-color: var(--p3)">
+      <div class="tl-phase">Phase 03</div>
+      <div class="tl-title">Data Engineering for LLMs</div>
+      <div class="tl-project">Build a domain-specific data pipeline</div>
+      <div class="tl-duration">3–4 weeks</div>
+    </a>
+    <a class="tl-card" href="#phase4" style="--phase-color: var(--p4)">
+      <div class="tl-phase">Phase 04</div>
+      <div class="tl-title">Distributed Training & Infra</div>
+      <div class="tl-project">Train a 1.3B model across multiple GPUs</div>
+      <div class="tl-duration">4–5 weeks</div>
+    </a>
+    <a class="tl-card" href="#phase5" style="--phase-color: var(--p5)">
+      <div class="tl-phase">Phase 05</div>
+      <div class="tl-title">Fine-Tuning, RLHF & Alignment</div>
+      <div class="tl-project">SFT + DPO fine-tune on Llama-3 7B</div>
+      <div class="tl-duration">4–5 weeks</div>
+    </a>
+    <a class="tl-card" href="#phase6" style="--phase-color: var(--p6)">
+      <div class="tl-phase">Phase 06</div>
+      <div class="tl-title">Evaluation, Inference & Production</div>
+      <div class="tl-project">Deploy model as a production API</div>
+      <div class="tl-duration">3–4 weeks</div>
+    </a>
+  </div>
+
+  <!-- PHASES -->
+  <div class="section-head">
+    <span class="section-num">02</span>
+    <h2>Phase Breakdown</h2>
+    <div class="line"></div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase-card" id="phase1" style="--phase-color: var(--p1)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">P.01</div>
+      <div class="phase-header-content">
+        <div class="phase-tag">Phase 01 · Foundation</div>
+        <div class="phase-title">Tokens, Embeddings & the Attention Mechanism</div>
+        <div class="phase-duration">3–4 weeks · 2–4 hrs/day</div>
+      </div>
+      <div class="phase-toggle">+</div>
+    </div>
+    <div class="phase-body">
+      <div class="project-goal">
+        <strong>🎯 Project Goal</strong>
+        Build a character-level language model from scratch — no libraries beyond PyTorch. Tokenize text, implement an embedding layer, write a basic attention head by hand, and train the model to predict next characters on a small corpus (e.g. Shakespeare). You will generate text before you read a single paper.
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4>Theory — introduced as you need it</h4>
+          <ul>
+            <li>Tokenization: BPE vs character-level — why it matters when batching</li>
+            <li>Embeddings: what the weight matrix actually learns</li>
+            <li>Scaled dot-product attention: derive Q, K, V from first principles</li>
+            <li>Softmax temperature: see it control randomness directly in your output</li>
+            <li>Backprop through time — only when your gradients vanish in practice</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>Stack & Tools</h4>
+          <ul>
+            <li>PyTorch (raw — no HuggingFace yet)</li>
+            <li>Weights & Biases for experiment tracking</li>
+            <li>Cursor IDE with Claude/GPT-4o for pair-coding</li>
+            <li>Jupyter notebooks for visualising attention matrices</li>
+            <li>GitHub — commit daily, even small experiments</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-block" style="margin-bottom:20px">
+        <h4>Hands-on Tasks (in order)</h4>
+      </div>
+      <ul class="tasks-list">
+        <li><span class="step-num">01</span>Set up Python 3.11, PyTorch, Jupyter, W&B, GitHub repo — get the environment solid first</li>
+        <li><span class="step-num">02</span>Download tiny-shakespeare; write a BPE tokenizer from scratch in under 100 lines</li>
+        <li><span class="step-num">03</span>Implement single-head self-attention with no library — validate every tensor shape</li>
+        <li><span class="step-num">04</span>Stack 2–4 transformer blocks; add positional encoding</li>
+        <li><span class="step-num">05</span>Train on CPU first, then free Colab GPU; log loss curves to W&B</li>
+        <li><span class="step-num">06</span>Generate text — compare greedy vs temperature vs nucleus sampling</li>
+        <li><span class="step-num">07</span>Use Cursor to accelerate boilerplate; manually review every AI suggestion before running it</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="math-label">KEY MATH</span>
+        <span class="math-content">Attention(Q,K,V) = softmax( QKᵀ / √d_k ) · V<br>Derive it. Implement it. Visualise the attention weights as a heatmap on your Shakespeare text.</span>
+      </div>
+
+      <div class="milestone-box">
+        <span class="ms-label">MILESTONE</span>
+        <span class="ms-content">Your character-level GPT generates recognisable Shakespearean prose. You can explain every tensor shape in the forward pass.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-card" id="phase2" style="--phase-color: var(--p2)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">P.02</div>
+      <div class="phase-header-content">
+        <div class="phase-tag">Phase 02 · Architecture</div>
+        <div class="phase-title">GPT-2 Architecture Deep Dive</div>
+        <div class="phase-duration">4–5 weeks · 2–4 hrs/day</div>
+      </div>
+      <div class="phase-toggle">+</div>
+    </div>
+    <div class="phase-body">
+      <div class="project-goal">
+        <strong>🎯 Project Goal</strong>
+        Go from toy model to real GPT-2 architecture (124M parameters). Implement multi-head attention, layer norm, MLP blocks, and train on a real dataset (OpenWebText subset). Use Karpathy's nanoGPT as a reference — but instrument and extend every part of it yourself.
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4>Theory — when you hit it in nanoGPT</h4>
+          <ul>
+            <li>Multi-head attention: why multiple heads and what each learns</li>
+            <li>LayerNorm vs BatchNorm: stability during deep training</li>
+            <li>Residual connections: see the effect by removing them experimentally</li>
+            <li>GPT-2 weight init: std=0.02, scaled by layer depth</li>
+            <li>Cosine annealing with warmup: derive the schedule, see it in W&B</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>Stack & Tools</h4>
+          <ul>
+            <li>nanoGPT (Karpathy) as base — read every line first</li>
+            <li>Lambda Labs / Vast.ai for GPU rental (~$1/hr A100)</li>
+            <li>W&B Sweeps for hyperparameter search</li>
+            <li>Cursor for refactoring experiment variants</li>
+            <li>Flash Attention (implement manually, then compare)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-block" style="margin-bottom:20px">
+        <h4>Hands-on Tasks (in order)</h4>
+      </div>
+      <ul class="tasks-list">
+        <li><span class="step-num">01</span>Clone nanoGPT — read and annotate every single line before running anything</li>
+        <li><span class="step-num">02</span>Instrument with W&B: log grad norms, weight histograms, per-head attention entropy</li>
+        <li><span class="step-num">03</span>Rent an A100 and run a training job on a 10B token OpenWebText subset</li>
+        <li><span class="step-num">04</span>Implement Flash Attention manually; benchmark it against naive attention</li>
+        <li><span class="step-num">05</span>Run ablations: remove residuals, change init, change LR — document what breaks and why</li>
+        <li><span class="step-num">06</span>Use Claude to explain any confusing GPT-2 paper section; cross-check explanation with code</li>
+        <li><span class="step-num">07</span>Write an internal blog post explaining the architecture to a junior dev from memory</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="math-label">KEY MATH</span>
+        <span class="math-content">Parameter count formula: ~12 × n_layers × d_model² ≈ 124M for GPT-2 small.<br>Verify this yourself by summing named_parameters() and matching the formula.</span>
+      </div>
+
+      <div class="milestone-box">
+        <span class="ms-label">MILESTONE</span>
+        <span class="ms-content">You can explain every tensor shape in a GPT-2 forward pass from memory, and you have W&B logs from a real training run you own.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-card" id="phase3" style="--phase-color: var(--p3)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">P.03</div>
+      <div class="phase-header-content">
+        <div class="phase-tag">Phase 03 · Data Engineering</div>
+        <div class="phase-title">Building Domain-Specific Training Data Pipelines</div>
+        <div class="phase-duration">3–4 weeks · 2–4 hrs/day</div>
+      </div>
+      <div class="phase-toggle">+</div>
+    </div>
+    <div class="phase-body">
+      <div class="project-goal">
+        <strong>🎯 Project Goal</strong>
+        Data quality is the single biggest lever in LLM training. Build an end-to-end pipeline: raw web crawl → deduplication → quality filtering → tokenisation → streaming dataloader. This phase leverages your existing SE skills the most — lean into it.
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4>Theory — introduced when the pipeline breaks</h4>
+          <ul>
+            <li>MinHash LSH deduplication: why duplicates hurt more than you think</li>
+            <li>Quality filters: perplexity scoring, n-gram heuristics (C4 paper)</li>
+            <li>Chinchilla data-compute scaling: the key insight about tokens per param</li>
+            <li>Tokenizer training: SentencePiece, tiktoken, vocab size tradeoffs</li>
+            <li>Streaming datasets: why you can't load 1TB into RAM</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>Stack & Tools</h4>
+          <ul>
+            <li>Apache Spark or Polars for large-scale processing</li>
+            <li>datasketch library for MinHash LSH</li>
+            <li>SentencePiece, tiktoken</li>
+            <li>HuggingFace datasets (streaming mode)</li>
+            <li>AI tools for pipeline scaffolding; profile for bottlenecks</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-block" style="margin-bottom:20px">
+        <h4>Hands-on Tasks (in order)</h4>
+      </div>
+      <ul class="tasks-list">
+        <li><span class="step-num">01</span>Download a 10GB CommonCrawl WARC dump; build an extraction and cleaning pipeline</li>
+        <li><span class="step-num">02</span>Implement MinHash deduplication; measure the exact deduplication rate on your corpus</li>
+        <li><span class="step-num">03</span>Train a SentencePiece tokenizer on your domain corpus; compare different vocab sizes</li>
+        <li><span class="step-num">04</span>Build a streaming DataLoader with prefetching; profile I/O vs GPU utilisation</li>
+        <li><span class="step-num">05</span>Reproduce C4 quality filters; compare perplexity of a small model trained before vs after</li>
+        <li><span class="step-num">06</span>Use AI to generate Spark/Polars boilerplate; profile and find the bottleneck</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="math-label">KEY MATH</span>
+        <span class="math-content">Chinchilla optimal: N_tokens ≈ 20 × N_params<br>Understand why — and more importantly, when to deviate from it for your specific use case.</span>
+      </div>
+
+      <div class="milestone-box">
+        <span class="ms-label">MILESTONE</span>
+        <span class="ms-content">A fully reproducible pipeline that turns a raw web crawl into a clean, deduplicated, tokenised dataset ready for training.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-card" id="phase4" style="--phase-color: var(--p4)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">P.04</div>
+      <div class="phase-header-content">
+        <div class="phase-tag">Phase 04 · Infrastructure</div>
+        <div class="phase-title">Distributed Training at Scale</div>
+        <div class="phase-duration">4–5 weeks · 2–4 hrs/day</div>
+      </div>
+      <div class="phase-toggle">+</div>
+    </div>
+    <div class="phase-body">
+      <div class="project-goal">
+        <strong>🎯 Project Goal</strong>
+        This is where you earn the title of training lead. Configure and run distributed training with DDP, Tensor Parallelism, and Pipeline Parallelism on a real multi-GPU setup. Profile GPU utilisation, identify bottlenecks, and achieve greater than 50% Model FLOP Utilisation (MFU).
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4>Theory — when your GPUs sit idle</h4>
+          <ul>
+            <li>Data Parallel (DDP): gradient AllReduce — when it becomes the bottleneck</li>
+            <li>Tensor Parallelism (Megatron): split weight matrices across GPUs</li>
+            <li>Pipeline Parallelism: micro-batching to hide bubble overhead</li>
+            <li>Mixed precision: FP16 vs BF16 vs FP8, loss scaling explained</li>
+            <li>ZeRO optimizer stages: shard optimizer state, gradients, parameters</li>
+            <li>Gradient checkpointing: trading compute for memory</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>Stack & Tools</h4>
+          <ul>
+            <li>PyTorch DDP + FSDP</li>
+            <li>DeepSpeed ZeRO (stages 1, 2, 3)</li>
+            <li>Megatron-LM for Tensor Parallelism</li>
+            <li>NVIDIA Nsight Systems for profiling</li>
+            <li>W&B for distributed run monitoring</li>
+            <li>Lambda Labs / CoreWeave 4×A100 node</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-block" style="margin-bottom:20px">
+        <h4>Hands-on Tasks (in order)</h4>
+      </div>
+      <ul class="tasks-list">
+        <li><span class="step-num">01</span>Set up a 4×A100 node on Lambda; configure passwordless SSH and shared storage</li>
+        <li><span class="step-num">02</span>Train a 1.3B model baseline with DDP; measure GPU utilisation using nsys + PyTorch profiler</li>
+        <li><span class="step-num">03</span>Add gradient checkpointing; measure the memory vs speed tradeoff empirically</li>
+        <li><span class="step-num">04</span>Integrate DeepSpeed ZeRO-2; compare memory footprint before and after</li>
+        <li><span class="step-num">05</span>Implement Tensor Parallelism using Megatron-LM; write unit tests to verify numerical correctness</li>
+        <li><span class="step-num">06</span>Profile and optimise until you hit >50% MFU — document every change and its effect</li>
+        <li><span class="step-num">07</span>Write a runbook: how to detect, diagnose, and resume after a node failure mid-training</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="math-label">KEY MATH</span>
+        <span class="math-content">MFU = achieved_FLOPS / peak_hardware_FLOPS<br>Model FLOPS per forward+backward pass ≈ 6 × N_params × N_tokens<br>Calculate this for your 1.3B run before running it. Then measure the gap.</span>
+      </div>
+
+      <div class="milestone-box">
+        <span class="ms-label">MILESTONE</span>
+        <span class="ms-content">A 1.3B model training run you fully own: you can start it, monitor it, debug it when it crashes, and resume it from checkpoint without losing progress.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase-card" id="phase5" style="--phase-color: var(--p5)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">P.05</div>
+      <div class="phase-header-content">
+        <div class="phase-tag">Phase 05 · Alignment</div>
+        <div class="phase-title">Fine-Tuning, RLHF & Direct Preference Optimisation</div>
+        <div class="phase-duration">4–5 weeks · 2–4 hrs/day</div>
+      </div>
+      <div class="phase-toggle">+</div>
+    </div>
+    <div class="phase-body">
+      <div class="project-goal">
+        <strong>🎯 Project Goal</strong>
+        Take an open pre-trained model (Llama-3 7B) and make it genuinely useful for a specific domain — instruction following in code review, medical Q&A, or a domain you choose. Run full SFT, then apply DPO as a modern, simpler alternative to PPO-based RLHF.
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4>Theory — introduced when your model ignores instructions</h4>
+          <ul>
+            <li>SFT: data format, loss masking on prompt tokens (critical detail)</li>
+            <li>RLHF: reward model training, PPO — conceptual understanding</li>
+            <li>DPO: why it's simpler than PPO; the preference pair data format</li>
+            <li>LoRA / QLoRA: low-rank adaptation math — why rank 16 works well</li>
+            <li>Catastrophic forgetting: regularisation and data replay strategies</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>Stack & Tools</h4>
+          <ul>
+            <li>HuggingFace TRL (SFTTrainer, DPOTrainer)</li>
+            <li>PEFT library (LoRA, QLoRA)</li>
+            <li>vLLM for fast inference during evaluation</li>
+            <li>GPT-4o as LLM-judge for automated win-rate eval</li>
+            <li>AI tools for data curation assistance</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-block" style="margin-bottom:20px">
+        <h4>Hands-on Tasks (in order)</h4>
+      </div>
+      <ul class="tasks-list">
+        <li><span class="step-num">01</span>Curate 10K instruction pairs for your domain; use AI to assist but manually review 500 samples</li>
+        <li><span class="step-num">02</span>Run full SFT on Llama-3 7B with HuggingFace TRL; verify loss masking is correct on prompt tokens</li>
+        <li><span class="step-num">03</span>Implement LoRA fine-tune; compare adapter size vs quality vs full fine-tune</li>
+        <li><span class="step-num">04</span>Collect 2K preference pairs (chosen vs rejected responses) for your task</li>
+        <li><span class="step-num">05</span>Run DPO training; measure win rate vs SFT baseline using LLM-as-judge</li>
+        <li><span class="step-num">06</span>Run QLoRA on a single A100; understand the memory vs quality tradeoff quantitatively</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="math-label">KEY MATH</span>
+        <span class="math-content">DPO loss: −log σ( β·log(π_θ(y_w|x)/π_ref(y_w|x)) − β·log(π_θ(y_l|x)/π_ref(y_l|x)) )<br>Understand what β controls, what π_ref is, and why no reward model is needed.</span>
+      </div>
+
+      <div class="milestone-box">
+        <span class="ms-label">MILESTONE</span>
+        <span class="ms-content">A fine-tuned 7B model that measurably outperforms the base Llama-3 on your domain task, with win-rate numbers you can defend.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 6 -->
+  <div class="phase-card" id="phase6" style="--phase-color: var(--p6)">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num-badge">P.06</div>
+      <div class="phase-header-content">
+        <div class="phase-tag">Phase 06 · Production</div>
+        <div class="phase-title">Evaluation, Inference Optimisation & Deployment</div>
+        <div class="phase-duration">3–4 weeks · 2–4 hrs/day</div>
+      </div>
+      <div class="phase-toggle">+</div>
+    </div>
+    <div class="phase-body">
+      <div class="project-goal">
+        <strong>🎯 Project Goal</strong>
+        A model no one can use is worthless. Build a rigorous evaluation harness, quantise the model for efficient inference, and deploy it as a scalable API with full observability. This is what separates a researcher from a training lead who ships.
+      </div>
+
+      <div class="two-col">
+        <div class="col-block">
+          <h4>Theory — when you hit latency or cost walls</h4>
+          <ul>
+            <li>Eval: BLEU/ROUGE vs LLM-judge vs task-specific — when to use each</li>
+            <li>Quantisation: INT8 vs INT4 vs GPTQ vs AWQ tradeoffs</li>
+            <li>Speculative decoding: draft model + verification, acceptance rate math</li>
+            <li>KV cache: why it grows linearly; PagedAttention (vLLM) solution</li>
+            <li>Throughput vs latency: the batching tradeoff for serving</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>Stack & Tools</h4>
+          <ul>
+            <li>lm-evaluation-harness (EleutherAI)</li>
+            <li>vLLM for production inference</li>
+            <li>AutoGPTQ, llm-awq for quantisation</li>
+            <li>Grafana + Prometheus for monitoring</li>
+            <li>FastAPI as serving wrapper</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-block" style="margin-bottom:20px">
+        <h4>Hands-on Tasks (in order)</h4>
+      </div>
+      <ul class="tasks-list">
+        <li><span class="step-num">01</span>Build an eval harness using lm-evaluation-harness on 5+ benchmarks; establish baselines</li>
+        <li><span class="step-num">02</span>Implement GPTQ and AWQ quantisation; measure perplexity degradation at each bit width</li>
+        <li><span class="step-num">03</span>Deploy with vLLM; load test with 100 concurrent requests; measure p50/p99 TTFT and throughput</li>
+        <li><span class="step-num">04</span>Add OpenTelemetry tracing; build a Grafana dashboard: tokens/sec, TTFT, error rate, GPU util</li>
+        <li><span class="step-num">05</span>Write a model card: training data, eval results, known failure modes, intended use, limitations</li>
+        <li><span class="step-num">06</span>Set up automated regression evals: any change that degrades benchmarks >1% triggers an alert</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="math-label">KEY MATH</span>
+        <span class="math-content">Throughput = batch_size × tokens_per_step × steps_per_second<br>Know your A100 peak FLOPS (312 TF/s BF16) and calculate theoretical max throughput before measuring.</span>
+      </div>
+
+      <div class="milestone-box">
+        <span class="ms-label">MILESTONE</span>
+        <span class="ms-content">A production API with latency SLOs, a Grafana dashboard, automated regression evals, and a model card you'd be proud to share publicly.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI TOOLS -->
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <h2>AI Tools — How to Use Them Effectively</h2>
+    <div class="line"></div>
+  </div>
+
+  <table class="tools-table">
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Best Used For</th>
+        <th>GPT Learning Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cursor (Claude/GPT-4o)</td>
+        <td>Implementing boilerplate, refactoring, debugging tricky tensor shapes</td>
+        <td>"Generate the streaming DataLoader for a 100GB tokenised dataset with prefetch and shuffle buffer"</td>
+      </tr>
+      <tr>
+        <td>Claude.ai (chat)</td>
+        <td>Explaining papers, working through math, architectural decision tradeoffs</td>
+        <td>"Explain GPT-2's weight tying between embedding and unembedding matrices and why it saves parameters"</td>
+      </tr>
+      <tr>
+        <td>GitHub Copilot</td>
+        <td>Inline code completion during rapid implementation sessions</td>
+        <td>Autocomplete attention mask logic; then verify against Karpathy's reference implementation</td>
+      </tr>
+      <tr>
+        <td>W&B AI (Weave)</td>
+        <td>Automated analysis of training runs, anomaly detection, run comparison</td>
+        <td>Ask W&B to compare two runs and surface which hyperparameter changes most affected final loss</td>
+      </tr>
+      <tr>
+        <td>LLM-as-Judge (GPT-4o)</td>
+        <td>Automated evaluation of model outputs at scale without human labellers</td>
+        <td>Rate your fine-tuned vs base model outputs on a 1–5 rubric across 1K samples automatically</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAPERS -->
+  <div class="section-head">
+    <span class="section-num">04</span>
+    <h2>Essential Papers — Read When You Hit the Concept</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="papers-list">
+    <div class="paper-row" style="background: var(--surface2)">
+      <div style="font-family: 'Space Mono'; font-size: 10px; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; display: flex; align-items: center; justify-content: center;">Phase</div>
+      <div style="font-family: 'Space Mono'; font-size: 10px; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase;">Paper</div>
+      <div style="font-family: 'Space Mono'; font-size: 10px; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase;">Why It Matters</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p1)">P.01</div>
+      <div class="paper-title">Attention Is All You Need — Vaswani et al. (2017)</div>
+      <div class="paper-why">The transformer architecture you are building. Read alongside your code, not before it.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p2)">P.02</div>
+      <div class="paper-title">GPT-2 Technical Report — Radford et al. (2019)</div>
+      <div class="paper-why">Architecture details and hyperparameters for the training run you will replicate.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p3)">P.03</div>
+      <div class="paper-title">Chinchilla — Hoffmann et al. (2022)</div>
+      <div class="paper-why">Reframes everything: it's about tokens-per-parameter, not just model size.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p4)">P.04</div>
+      <div class="paper-title">Megatron-LM — Shoeybi et al. (2019)</div>
+      <div class="paper-why">Tensor parallelism design — read while implementing Phase 4's distributed setup.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p4)">P.04</div>
+      <div class="paper-title">ZeRO — Rajbhandari et al. (2020)</div>
+      <div class="paper-why">How to shard optimizer state. The key insight for training models larger than a single GPU's memory.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p5)">P.05</div>
+      <div class="paper-title">InstructGPT — Ouyang et al. (2022)</div>
+      <div class="paper-why">The original RLHF pipeline. Understand it before moving to DPO so you know what DPO simplifies.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p5)">P.05</div>
+      <div class="paper-title">DPO — Rafailov et al. (2023)</div>
+      <div class="paper-why">The simpler RLHF alternative you will implement. Short paper, high-value derivation.</div>
+    </div>
+    <div class="paper-row">
+      <div class="paper-phase" style="color: var(--p6)">P.06</div>
+      <div class="paper-title">Flash Attention 2 — Dao (2023)</div>
+      <div class="paper-why">Why naive attention is slow. The IO-aware algorithm that makes training tractable at scale.</div>
+    </div>
+  </div>
+
+  <!-- COMPETENCY MAP -->
+  <div class="section-head">
+    <span class="section-num">05</span>
+    <h2>Training Lead Competency Map</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="competency-grid">
+    <div class="comp-col">
+      <h3>Technical Decisions</h3>
+      <ul>
+        <li>Architecture selection and parameter sizing</li>
+        <li>Tokenizer and training data mix design</li>
+        <li>Parallelism strategy (DP / TP / PP tradeoffs)</li>
+        <li>Hyperparameter schedule design</li>
+        <li>Evaluation benchmark selection</li>
+        <li>Quantisation and serving strategy</li>
+      </ul>
+    </div>
+    <div class="comp-col" style="background: var(--surface2)">
+      <h3>Operational Ownership</h3>
+      <ul>
+        <li>Debug a diverging training loss systematically</li>
+        <li>Resume from checkpoint after node failure</li>
+        <li>Identify GPU bottlenecks (compute vs I/O vs comms)</li>
+        <li>Manage cloud GPU cost against training schedule</li>
+        <li>Maintain reproducible experiment logs</li>
+        <li>Set up automated regression eval pipelines</li>
+      </ul>
+    </div>
+    <div class="comp-col">
+      <h3>Team & Communication</h3>
+      <ul>
+        <li>Write clear, actionable experiment reports</li>
+        <li>Review ML engineer PRs with real depth</li>
+        <li>Brief stakeholders on training status honestly</li>
+        <li>Estimate compute budget before a new run</li>
+        <li>Write model cards with honest limitations</li>
+        <li>Onboard new engineers to the training stack</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DAILY RHYTHM -->
+  <div class="section-head">
+    <span class="section-num">06</span>
+    <h2>Daily & Weekly Rhythm</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="rhythm-blocks">
+    <div class="rhythm-block">
+      <div class="rhythm-day">MON – WED</div>
+      <p>2–3 hrs hands-on coding on the phase project. Use AI tools freely. Commit working code to GitHub daily, even if it's small.</p>
+    </div>
+    <div class="rhythm-block" style="background: var(--surface2)">
+      <div class="rhythm-day">THURSDAY</div>
+      <p>1–1.5 hrs reading the week's relevant paper section or math concept — only the parts your code actually touched.</p>
+    </div>
+    <div class="rhythm-block">
+      <div class="rhythm-day">FRIDAY</div>
+      <p>1 hr reviewing W&B logs, writing a short experiment summary, and updating your learning notes in a running doc.</p>
+    </div>
+    <div class="rhythm-block" style="background: var(--surface2)">
+      <div class="rhythm-day">WEEKEND</div>
+      <p>Optional. Watch Karpathy's YouTube series, explore tangents, run experiments that came up during the week.</p>
+    </div>
+  </div>
+
+  <!-- READY SIGNALS -->
+  <div class="section-head">
+    <span class="section-num">07</span>
+    <h2>You Are Ready to Lead When...</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="signals">
+    <div class="signal">
+      <div class="signal-check"></div>
+      <p>You can estimate the GPU-hours and cost of a new training run from first principles — before touching a single line of code.</p>
+    </div>
+    <div class="signal">
+      <div class="signal-check"></div>
+      <p>When a training loss diverges at step 40K, you have a systematic debugging playbook and can pinpoint the root cause.</p>
+    </div>
+    <div class="signal">
+      <div class="signal-check"></div>
+      <p>You can write the attention mechanism from scratch on a whiteboard, explaining every design decision as you go.</p>
+    </div>
+    <div class="signal">
+      <div class="signal-check"></div>
+      <p>You can look at a W&B dashboard for a training run you didn't launch and identify the three most important things to investigate.</p>
+    </div>
+    <div class="signal">
+      <div class="signal-check"></div>
+      <p>A junior engineer asks why their fine-tuned model keeps repeating phrases. You diagnose the root cause in under 10 minutes.</p>
+    </div>
+    <div class="signal">
+      <div class="signal-check"></div>
+      <p>You can brief a non-technical executive on "why we need to retrain" with confidence, numbers, and a clear recommendation.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-tagline">Build things. Measure everything. <span>Ship models.</span></div>
+    <div class="footer-meta">GPT TRAINING MASTERY · 6 PHASES · ~6 MONTHS</div>
+  </footer>
+
+</div>
+
+<script>
+  function togglePhase(header) {
+    const card = header.closest('.phase-card');
+    card.classList.toggle('open');
+  }
+
+  // Open first phase by default
+  document.querySelector('.phase-card').classList.add('open');
+
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll('.phase-card, .tl-card, .principle, .signal').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(12px)';
+    el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
