@@ -1,0 +1,12 @@
+[project]
+name = "phase01-foundation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+# Pin torch version for my Intel Mac (iMac 2020)
+dependencies = [
+    "jupyter>=1.1.1",
+    "torch==2.2.0",
+    "wandb>=0.25.0",
+]
