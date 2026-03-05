@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPE: Byte Pair Encoding</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a35;
+    --text: #e8e8f0;
+    --muted: #7878a0;
+    --accent: #a78bfa;
+    --accent2: #34d399;
+    --accent3: #fb923c;
+    --accent4: #60a5fa;
+    --red: #f87171;
+    --yellow: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(167,139,250,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167,139,250,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(48px, 8vw, 80px);
+    line-height: 0.95;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  /* ── Section headers ── */
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  .card p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .card p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── Why section visual ── */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
+
+  .why-box {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .why-box .label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .why-box.bad .label { color: var(--red); }
+  .why-box.good .label { color: var(--accent2); }
+
+  .why-box .tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tok {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .tok.char { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .tok.word { background: rgba(52,211,153,0.12); color: var(--accent2); border: 1px solid rgba(52,211,153,0.3); }
+  .tok.sub  { background: rgba(167,139,250,0.12); color: var(--accent); border: 1px solid rgba(167,139,250,0.3); }
+  .tok.unk  { background: rgba(251,191,36,0.12);  color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+
+  /* ── Algorithm steps ── */
+  .algo-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .algo-steps::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    bottom: 40px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    opacity: 0.3;
+  }
+
+  .algo-step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px 0;
+  }
+
+  .step-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+    border: 2px solid;
+    background: var(--bg);
+    z-index: 1;
+  }
+
+  .step-dot.s1 { border-color: var(--accent); color: var(--accent); }
+  .step-dot.s2 { border-color: var(--accent4); color: var(--accent4); }
+  .step-dot.s3 { border-color: var(--accent2); color: var(--accent2); }
+  .step-dot.s4 { border-color: var(--accent3); color: var(--accent3); }
+
+  .step-content h3 {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .step-content p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── Live demo ── */
+  .demo-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .demo-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+  }
+
+  .demo-header span {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .demo-body {
+    padding: 24px;
+  }
+
+  .demo-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .demo-input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .demo-input:focus { border-color: var(--accent); }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0d0f;
+  }
+  .btn-primary:hover { background: #c4b5fd; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* vocab size control */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .slider-row label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 160px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .slider-val {
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 30px;
+  }
+
+  /* Merge steps table */
+  .merge-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .merge-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  .merge-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(42,42,53,0.5);
+    vertical-align: middle;
+  }
+
+  .merge-table tr:last-child td { border-bottom: none; }
+
+  .merge-table tr {
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .merge-table tr:hover td { background: rgba(167,139,250,0.05); }
+
+  .merge-table tr.active td { background: rgba(167,139,250,0.1); }
+
+  .rank-num {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .pair-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pair-a, .pair-b { background: rgba(96,165,250,0.15); color: var(--accent4); padding: 2px 8px; border-radius: 3px; }
+  .pair-arrow { color: var(--muted); }
+  .pair-merged { background: rgba(167,139,250,0.15); color: var(--accent); padding: 2px 8px; border-radius: 3px; }
+
+  .count-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+
+  /* Token visualization */
+  .token-vis {
+    margin-top: 16px;
+  }
+
+  .token-vis-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .token-stream {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 40px;
+    align-items: center;
+  }
+
+  .token-chip {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+    border: 1px solid;
+    animation: popIn 0.3s ease;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  .token-chip.highlight {
+    animation: pulse 0.6s ease;
+  }
+
+  @keyframes pulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.15); box-shadow: 0 0 16px currentColor; }
+    100% { transform: scale(1); }
+  }
+
+  /* progress bar */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Vocab viewer ── */
+  .vocab-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .vocab-grid::-webkit-scrollbar { width: 4px; }
+  .vocab-grid::-webkit-scrollbar-track { background: transparent; }
+  .vocab-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .vocab-item {
+    padding: 3px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .vocab-item.new {
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.4);
+    color: var(--accent);
+    animation: popIn 0.3s ease;
+  }
+
+  /* ── Stat boxes ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  @media(max-width:500px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+
+  .stat-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 16px 0;
+  }
+
+  /* stepwise highlight for pair search */
+  .pair-highlight {
+    background: rgba(251,191,36,0.25);
+    color: var(--yellow);
+    border-color: rgba(251,191,36,0.5) !important;
+  }
+
+  /* Scrollable merge table wrapper */
+  .table-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .table-scroll::-webkit-scrollbar { width: 4px; }
+  .table-scroll::-webkit-scrollbar-track { background: transparent; }
+  .table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s;
+    background: transparent;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tab.active {
+    background: rgba(167,139,250,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── What LLMs use section ── */
+  .llm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .llm-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .llm-card .name {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .llm-card .detail {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .llm-card .vocab-size {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* footer */
+  footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="eyebrow">Tokenization · NLP · LLMs</div>
+    <h1>Byte Pair<br>Encoding</h1>
+    <p class="subtitle">The elegant compression algorithm that teaches language models how to read — explained interactively, from first principles.</p>
+  </header>
+
+  <!-- Section 1: The Problem -->
+  <div class="section">
+    <div class="section-label">
+      <span class="section-num">01</span>
+      <span class="section-title">The Problem</span>
+    </div>
+    <div class="card">
+      <p>
+        Language models don't read text — they read <strong>numbers</strong>. Every word, syllable, or character must be converted into a token ID before the model can process it. But how you split text into tokens matters enormously.
+      </p>
+    </div>
+    <div class="why-grid">
+      <div class="why-box bad">
+        <div class="label">❌ Character-level</div>
+        <div class="tokens">
+          <span class="tok char">u</span><span class="tok char">n</span><span class="tok char">h</span><span class="tok char">a</span><span class="tok char">p</span><span class="tok char">p</span><span class="tok char">i</span><span class="tok char">n</span><span class="tok char">e</span><span class="tok char">s</span><span class="tok char">s</span>
+        </div>
+        <p style="color:var(--muted);font-size:11px;margin-top:10px;font-weight:300;">11 tokens — too many, loses word structure, huge sequences</p>
+      </div>
+      <div class="why-box bad">
+        <div class="label">❌ Word-level</div>
+        <div class="tokens">
+          <span class="tok word">unhappiness</span>
+          <span class="tok unk">[UNK]</span>
+        </div>
+        <p style="color:var(--muted);font-size:11px;margin-top:10px;font-weight:300;">Unknown words → [UNK]. Needs millions of vocab entries for all forms</p>
+      </div>
+      <div class="why-box good" style="grid-column: 1 / -1;">
+        <div class="label">✅ BPE subword — the sweet spot</div>
+        <div class="tokens">
+          <span class="tok sub">un</span>
+          <span class="tok sub">happiness</span>
+        </div>
+        <p style="color:var(--muted);font-size:11px;margin-top:10px;font-weight:300;">2 meaningful pieces. Unknown words are decomposed into known parts. Compact yet expressive. This is what GPT, Claude, and every modern LLM uses.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Algorithm -->
+  <div class="section">
+    <div class="section-label">
+      <span class="section-num">02</span>
+      <span class="section-title">The Algorithm</span>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <p>BPE is beautifully simple: <strong>repeatedly merge the most frequent pair of adjacent tokens</strong> until you reach your desired vocabulary size. That's it.</p>
+    </div>
+    <div class="card" style="background: var(--bg); border-style: dashed;">
+      <div class="algo-steps">
+        <div class="algo-step">
+          <div class="step-dot s1">1</div>
+          <div class="step-content">
+            <h3>Start with characters</h3>
+            <p>Split all training text into individual characters (+ a special end-of-word marker like Ġ or </w>). Every character is in your starting vocabulary.</p>
+          </div>
+        </div>
+        <div class="algo-step">
+          <div class="step-dot s2">2</div>
+          <div class="step-content">
+            <h3>Count all adjacent pairs</h3>
+            <p>Scan the entire corpus and count how often each consecutive pair of tokens appears together. "t h" appearing 1000 times is a good merge candidate.</p>
+          </div>
+        </div>
+        <div class="algo-step">
+          <div class="step-dot s3">3</div>
+          <div class="step-content">
+            <h3>Merge the most frequent pair</h3>
+            <p>Take the top pair and merge them into one new token everywhere they appear. Add the new token to your vocabulary. Repeat from step 2.</p>
+          </div>
+        </div>
+        <div class="algo-step">
+          <div class="step-dot s4">4</div>
+          <div class="step-content">
+            <h3>Stop at vocab size</h3>
+            <p>Keep merging until you hit your target vocabulary size (e.g., 50,000 tokens). The final merge rules are saved and used for tokenizing new text at inference time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Live Demo -->
+  <div class="section">
+    <div class="section-label">
+      <span class="section-num">03</span>
+      <span class="section-title">Live Demo — Watch It Learn</span>
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <span>Interactive BPE Trainer</span>
+        <span id="status-text" style="color:var(--muted)">ready</span>
+      </div>
+      <div class="demo-body">
+
+        <div class="demo-controls">
+          <input class="demo-input" id="corpus-input" type="text" value="low lower lowest new newer newest" placeholder="Enter training corpus...">
+          <button class="btn btn-primary" onclick="runBPE()">▶ Train</button>
+          <button class="btn btn-secondary" onclick="resetDemo()">↺ Reset</button>
+        </div>
+
+        <div class="slider-row">
+          <label>Merges:</label>
+          <input type="range" id="merge-count" min="1" max="20" value="8" oninput="document.getElementById('merge-val').textContent=this.value">
+          <span class="slider-val" id="merge-val">8</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('merges')">Merge Rules</button>
+          <button class="tab" onclick="switchTab('vocab')">Vocabulary</button>
+          <button class="tab" onclick="switchTab('encode')">Encode Text</button>
+        </div>
+
+        <!-- Merges tab -->
+        <div class="tab-panel active" id="tab-merges">
+          <div class="table-scroll">
+            <table class="merge-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Pair merged</th>
+                  <th>→ New token</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody id="merge-tbody">
+                <tr><td colspan="4" style="color:var(--muted);font-size:12px;padding:20px 12px;text-align:center;">Click ▶ Train to see merge rules</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="stats-row" id="stats-row" style="display:none">
+            <div class="stat-box">
+              <span class="stat-num" id="stat-vocab" style="color:var(--accent)">—</span>
+              <span class="stat-label">Vocab Size</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="stat-merges" style="color:var(--accent2)">—</span>
+              <span class="stat-label">Merges Done</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num" id="stat-compression" style="color:var(--accent3)">—</span>
+              <span class="stat-label">Compression</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vocab tab -->
+        <div class="tab-panel" id="tab-vocab">
+          <div class="token-vis-label">Learned vocabulary tokens</div>
+          <div class="vocab-grid" id="vocab-display">
+            <span style="color:var(--muted);font-size:12px;">Train first to see vocabulary</span>
+          </div>
+        </div>
+
+        <!-- Encode tab -->
+        <div class="tab-panel" id="tab-encode">
+          <div class="demo-controls" style="margin-bottom:12px">
+            <input class="demo-input" id="encode-input" type="text" value="lower" placeholder="Type any word to tokenize...">
+            <button class="btn btn-primary" onclick="encodeWord()">Tokenize</button>
+          </div>
+          <div class="token-vis">
+            <div class="token-vis-label">Tokens</div>
+            <div class="token-stream" id="token-stream">
+              <span style="color:var(--muted);font-size:12px;">Train first, then encode</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:var(--muted);" id="encode-note"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Concrete walkthrough -->
+  <div class="section">
+    <div class="section-label">
+      <span class="section-num">04</span>
+      <span class="section-title">Step-by-Step Walkthrough</span>
+    </div>
+    <div class="card">
+      <p>Let's trace BPE on the toy corpus: <strong>"low low low new new"</strong></p>
+    </div>
+
+    <div id="walkthrough"></div>
+  </div>
+
+  <!-- Section 5: Real world -->
+  <div class="section">
+    <div class="section-label">
+      <span class="section-num">05</span>
+      <span class="section-title">BPE in the Wild</span>
+    </div>
+    <div class="llm-grid">
+      <div class="llm-card">
+        <span class="vocab-size">50K</span>
+        <div class="name">GPT-2</div>
+        <div class="detail">Original GPT-2 vocab. Byte-level BPE — works on raw bytes, never sees unknown tokens</div>
+      </div>
+      <div class="llm-card">
+        <span class="vocab-size">100K</span>
+        <div class="name">GPT-4 / Claude</div>
+        <div class="detail">cl100k_base tokenizer. ~100K tokens, handles code and multilingual text efficiently</div>
+      </div>
+      <div class="llm-card">
+        <span class="vocab-size">32K</span>
+        <div class="name">LLaMA 2</div>
+        <div class="detail">SentencePiece BPE. Smaller vocab, each token covers more characters on avg</div>
+      </div>
+      <div class="llm-card">
+        <span class="vocab-size">128K</span>
+        <div class="name">LLaMA 3</div>
+        <div class="detail">Expanded tiktoken vocab for better multilingual and code coverage</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <p>
+        <strong>Byte-level BPE</strong> (used by GPT-2 onwards) is a key innovation: instead of starting from characters, you start from the 256 raw bytes. This guarantees <em>zero unknown tokens</em> — any text, in any language, can always be represented because every byte exists in the base vocabulary.
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    BPE was originally a text compression algorithm (Philip Gage, 1994) and adapted for NLP by Rico Sennrich et al. in 2016 — now powering every major LLM.
+  </footer>
+
+</div>
+
+<script>
+// ─── BPE Engine ───────────────────────────────────────────────────────────────
+
+let learnedMerges = [];
+let learnedVocab = new Set();
+
+const COLORS = [
+  { bg: 'rgba(167,139,250,0.15)', border: 'rgba(167,139,250,0.5)', text: '#a78bfa' },
+  { bg: 'rgba(52,211,153,0.15)',  border: 'rgba(52,211,153,0.5)',  text: '#34d399' },
+  { bg: 'rgba(96,165,250,0.15)',  border: 'rgba(96,165,250,0.5)',  text: '#60a5fa' },
+  { bg: 'rgba(251,191,36,0.15)',  border: 'rgba(251,191,36,0.5)',  text: '#fbbf24' },
+  { bg: 'rgba(251,113,133,0.15)', border: 'rgba(251,113,133,0.5)', text: '#fb7185' },
+  { bg: 'rgba(34,211,238,0.15)',  border: 'rgba(34,211,238,0.5)',  text: '#22d3ee' },
+  { bg: 'rgba(249,115,22,0.15)',  border: 'rgba(249,115,22,0.5)',  text: '#f97316' },
+  { bg: 'rgba(163,230,53,0.15)',  border: 'rgba(163,230,53,0.5)',  text: '#a3e635' },
+];
+
+function tokenColor(i) {
+  return COLORS[i % COLORS.length];
+}
+
+// Tokenize corpus into words -> char arrays
+function corpusToWordFreq(text) {
+  const words = text.trim().toLowerCase().split(/\s+/);
+  const freq = {};
+  for (const w of words) {
+    const chars = w.split('').join(' ') + ' </w>';
+    freq[chars] = (freq[chars] || 0) + 1;
+  }
+  return freq;
+}
+
+// Count pairs in word frequency dict
+function countPairs(vocab) {
+  const pairs = {};
+  for (const [word, freq] of Object.entries(vocab)) {
+    const symbols = word.split(' ');
+    for (let i = 0; i < symbols.length - 1; i++) {
+      const pair = symbols[i] + '|' + symbols[i+1];
+      pairs[pair] = (pairs[pair] || 0) + freq;
+    }
+  }
+  return pairs;
+}
+
+// Merge best pair in vocab
+function mergePair(vocab, pair) {
+  const [a, b] = pair.split('|');
+  const newVocab = {};
+  const target = a + ' ' + b;
+  const replacement = a + b;
+  for (const [word, freq] of Object.entries(vocab)) {
+    const newWord = word.split(target).join(replacement);
+    newVocab[newWord] = freq;
+  }
+  return newVocab;
+}
+
+function runBPE() {
+  const text = document.getElementById('corpus-input').value;
+  const numMerges = parseInt(document.getElementById('merge-count').value);
+
+  if (!text.trim()) return;
+
+  document.getElementById('status-text').textContent = 'training...';
+
+  let vocab = corpusToWordFreq(text);
+
+  // Initial character vocab
+  const initVocab = new Set();
+  for (const word of Object.keys(vocab)) {
+    for (const sym of word.split(' ')) initVocab.add(sym);
+  }
+
+  learnedMerges = [];
+  learnedVocab = new Set(initVocab);
+
+  const tbody = document.getElementById('merge-tbody');
+  tbody.innerHTML = '';
+
+  for (let i = 0; i < numMerges; i++) {
+    const pairs = countPairs(vocab);
+    if (Object.keys(pairs).length === 0) break;
+
+    // Find best pair
+    let bestPair = null, bestCount = 0;
+    for (const [pair, count] of Object.entries(pairs)) {
+      if (count > bestCount) { bestCount = count; bestPair = pair; }
+    }
+
+    if (!bestPair || bestCount < 2) break;
+
+    const [pa, pb] = bestPair.split('|');
+    const merged = pa + pb;
+    vocab = mergePair(vocab, bestPair);
+    learnedVocab.add(merged);
+    learnedMerges.push({ a: pa, b: pb, merged, count: bestCount });
+
+    // Add row
+    const c = tokenColor(i);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="rank-num">${i+1}</td>
+      <td>
+        <div class="pair-display">
+          <span class="pair-a">${escHtml(pa)}</span>
+          <span class="pair-arrow">+</span>
+          <span class="pair-b">${escHtml(pb)}</span>
+        </div>
+      </td>
+      <td><span class="pair-merged" style="background:${c.bg};color:${c.text};border:1px solid ${c.border}">${escHtml(merged)}</span></td>
+      <td><span class="count-badge">×${bestCount}</span></td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  // Compute compression: original char count vs token count
+  const words = text.trim().toLowerCase().split(/\s+/);
+  const origChars = words.join('').length;
+  let tokenCount = 0;
+  for (const w of words) {
+    tokenCount += tokenizeWord(w).length;
+  }
+  const ratio = (origChars / tokenCount).toFixed(1);
+
+  document.getElementById('stat-vocab').textContent = learnedVocab.size;
+  document.getElementById('stat-merges').textContent = learnedMerges.length;
+  document.getElementById('stat-compression').textContent = ratio + '×';
+  document.getElementById('stats-row').style.display = 'grid';
+
+  // Update vocab display
+  updateVocabDisplay();
+
+  document.getElementById('status-text').textContent = `done — ${learnedMerges.length} merges`;
+}
+
+function tokenizeWord(word) {
+  let chars = word.split('').concat(['</w>']);
+  // Apply merges in order
+  for (const { a, b, merged } of learnedMerges) {
+    let i = 0;
+    const result = [];
+    while (i < chars.length) {
+      if (i < chars.length - 1 && chars[i] === a && chars[i+1] === b) {
+        result.push(merged);
+        i += 2;
+      } else {
+        result.push(chars[i]);
+        i++;
+      }
+    }
+    chars = result;
+  }
+  return chars;
+}
+
+function encodeWord() {
+  if (learnedMerges.length === 0) {
+    alert('Train the model first!');
+    return;
+  }
+  const word = document.getElementById('encode-input').value.trim().toLowerCase();
+  if (!word) return;
+
+  const tokens = tokenizeWord(word);
+  const stream = document.getElementById('token-stream');
+  stream.innerHTML = '';
+
+  // Remove </w> for display, show cleaned
+  const display = tokens.map(t => t.replace('</w>', ''));
+
+  display.forEach((t, i) => {
+    const c = tokenColor(i);
+    const chip = document.createElement('span');
+    chip.className = 'token-chip';
+    chip.style.cssText = `background:${c.bg};color:${c.text};border-color:${c.border};animation-delay:${i*80}ms`;
+    chip.textContent = t || '∅';
+    stream.appendChild(chip);
+  });
+
+  const note = document.getElementById('encode-note');
+  const inVocab = tokens.filter(t => learnedVocab.has(t)).length;
+  note.innerHTML = `<span style="color:var(--accent2)">✓</span> ${tokens.length} tokens — all pieces are in vocabulary`;
+}
+
+function updateVocabDisplay() {
+  const grid = document.getElementById('vocab-display');
+  grid.innerHTML = '';
+
+  const sorted = [...learnedVocab].sort((a, b) => {
+    // merged tokens (longer) come after base chars
+    return a.length - b.length || a.localeCompare(b);
+  });
+
+  sorted.forEach((tok, i) => {
+    const item = document.createElement('span');
+    item.className = 'vocab-item' + (i >= (learnedVocab.size - learnedMerges.length) ? '' : '');
+    item.textContent = tok;
+    grid.appendChild(item);
+  });
+
+  // Highlight merged ones
+  const items = grid.querySelectorAll('.vocab-item');
+  const baseCount = learnedVocab.size - learnedMerges.length;
+  items.forEach((el, i) => {
+    if (i >= baseCount) el.classList.add('new');
+  });
+}
+
+function resetDemo() {
+  learnedMerges = [];
+  learnedVocab = new Set();
+  document.getElementById('merge-tbody').innerHTML = '<tr><td colspan="4" style="color:var(--muted);font-size:12px;padding:20px 12px;text-align:center;">Click ▶ Train to see merge rules</td></tr>';
+  document.getElementById('stats-row').style.display = 'none';
+  document.getElementById('vocab-display').innerHTML = '<span style="color:var(--muted);font-size:12px;">Train first to see vocabulary</span>';
+  document.getElementById('token-stream').innerHTML = '<span style="color:var(--muted);font-size:12px;">Train first, then encode</span>';
+  document.getElementById('encode-note').innerHTML = '';
+  document.getElementById('status-text').textContent = 'reset';
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── Walkthrough ──────────────────────────────────────────────────────────────
+
+function buildWalkthrough() {
+  const steps = [
+    {
+      title: 'Initial split',
+      desc: 'Split each word into characters. "low" → l o w </w>. The </w> marker tells us where words end.',
+      words: {
+        'low': { tokens: ['l','o','w','</w>'], freq: 3 },
+        'new': { tokens: ['n','e','w','</w>'], freq: 2 },
+      }
+    },
+    {
+      title: 'Count pairs → most frequent: "l o" (×3)',
+      desc: 'Scan all adjacent pairs. "l o" appears 3 times (in all 3 occurrences of "low"). Merge it!',
+      words: {
+        'low': { tokens: ['lo','w','</w>'], freq: 3, highlight: 'lo' },
+        'new': { tokens: ['n','e','w','</w>'], freq: 2 },
+      }
+    },
+    {
+      title: 'Count pairs → most frequent: "lo w" (×3)',
+      desc: 'Now "lo w" is the top pair. The 3 "low" words each have this pair. Merge!',
+      words: {
+        'low': { tokens: ['low','</w>'], freq: 3, highlight: 'low' },
+        'new': { tokens: ['n','e','w','</w>'], freq: 2 },
+      }
+    },
+    {
+      title: 'Count pairs → "n e" (×2) and "w </w>" (×5)',
+      desc: '"w </w>" appears 5× but "new" contributes "n e" and "e w". Let\'s say "w </w>" wins. Merge!',
+      words: {
+        'low': { tokens: ['low','</w>'], freq: 3 },
+        'new': { tokens: ['n','e','w</w>'], freq: 2, highlight: 'w</w>' },
+      }
+    },
+  ];
+
+  const container = document.getElementById('walkthrough');
+  steps.forEach((step, si) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.style.marginBottom = '12px';
+
+    let html = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span style="background:rgba(167,139,250,0.15);color:var(--accent);border:1px solid rgba(167,139,250,0.4);padding:2px 10px;border-radius:4px;font-size:11px;">Step ${si+1}</span>
+      <span style="font-size:13px;color:var(--text)">${step.title}</span>
+    </div>
+    <p style="margin-bottom:14px">${step.desc}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:20px">`;
+
+    for (const [word, data] of Object.entries(step.words)) {
+      html += `<div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">"${word}" ×${data.freq}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">`;
+      data.tokens.forEach((tok, ti) => {
+        const isHL = data.highlight && tok === data.highlight;
+        const c = isHL ? { bg:'rgba(251,191,36,0.25)', border:'rgba(251,191,36,0.6)', text:'#fbbf24' } : tokenColor(ti);
+        html += `<span style="padding:4px 9px;border-radius:4px;font-size:12px;background:${c.bg};color:${c.text};border:1px solid ${c.border}">${escHtml(tok)}</span>`;
+      });
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+    div.innerHTML = html;
+    container.appendChild(div);
+  });
+}
+
+buildWalkthrough();
+</script>
+</body>
+</html>
