@@ -210,6 +210,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     padding: 8px 16px;
+    min-height: 38px;
     border-radius: 8px;
     border: 1px solid var(--border2);
     background: transparent;
@@ -217,6 +218,7 @@
     cursor: pointer;
     transition: all .18s;
     letter-spacing: .04em;
+    white-space: nowrap;
   }
   .btn:hover { border-color: var(--accent); color: var(--accent2); }
   .btn.primary {
@@ -229,7 +231,37 @@
 
   .demo-body { padding: 24px; }
 
-  /* ─── Input row ─── */
+  /* ─── Demo config bar ─── */
+  .demo-config {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .demo-config-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+  .run-btn-wrap {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 18px; /* align with input top (label height ~18px) */
+  }
+  .stage-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--text3);
+    text-align: center;
+    padding: 40px 0;
+  }
+
+
   .input-row {
     display: flex;
     gap: 12px;
@@ -257,6 +289,10 @@
     width: 100%;
   }
   input:focus { border-color: var(--accent); }
+  input:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
 
   .merge-hint {
     font-size: 11.5px;
@@ -285,6 +321,7 @@
     gap: 0;
     margin-bottom: 24px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     padding-bottom: 4px;
   }
   .step-node {
@@ -503,7 +540,138 @@
     gap: 16px;
     margin-bottom: 16px;
   }
-  @media(max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ══════════════════════════════════════
+     RESPONSIVE — iPhone & small screens
+     Target: 375px (iPhone SE) – 430px (iPhone Pro Max)
+  ══════════════════════════════════════ */
+  @media (max-width: 600px) {
+
+    /* Two-col → single col */
+    .two-col { grid-template-columns: 1fr; gap: 10px; }
+
+    /* Shell */
+    .shell { padding: 0 14px 60px; }
+
+    /* Header */
+    header { padding: 28px 0 24px; margin-bottom: 24px; }
+    .header-sub { font-size: 14px; }
+
+    /* Nav pills — scroll horizontally as a single row */
+    .nav-pills {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 6px;
+      margin-bottom: 24px;
+      gap: 6px;
+    }
+    .nav-pill {
+      flex-shrink: 0;
+      font-size: 11px;
+      padding: 7px 14px;
+    }
+
+    /* Cards */
+    .card { padding: 16px; border-radius: 12px; }
+    .card-title { font-size: 15px; }
+
+    /* Concept grid — single column */
+    .concept-grid { grid-template-columns: 1fr; gap: 10px; }
+
+    /* Pipeline at-a-glance — stack vertically */
+    .pipeline-flow {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0 !important;
+    }
+    .pipeline-step {
+      border-radius: 8px !important;
+      padding: 10px 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      text-align: left !important;
+    }
+    .pipeline-step .step-label-top {
+      font-size: 9px !important;
+      margin-bottom: 0 !important;
+      min-width: 42px;
+    }
+    .pipeline-arrow {
+      display: none !important;
+    }
+    .pipeline-arrow-down {
+      display: flex !important;
+    }
+
+    /* Demo config */
+    .demo-config { padding: 14px 14px; }
+    .input-row { flex-direction: column; gap: 10px; margin-bottom: 0; }
+    .input-group { min-width: unset; }
+    .input-group[style*="max-width"] { max-width: 100% !important; }
+    .run-btn-wrap {
+      padding-top: 0;
+      width: 100%;
+    }
+    .run-btn-wrap .btn { width: 100%; justify-content: center; padding: 12px; font-size: 13px; }
+
+    /* Demo topbar — stack title above buttons */
+    .demo-topbar { flex-direction: column; align-items: stretch; padding: 12px 14px; gap: 10px; }
+    .demo-topbar-title { font-size: 13px; }
+    .btn-row { justify-content: stretch; gap: 6px; }
+    .btn-row .btn { flex: 1; text-align: center; justify-content: center; padding: 10px 8px; font-size: 11px; }
+
+    /* Demo body */
+    .demo-body { padding: 14px; }
+
+    /* Stage title */
+    .stage-title { font-size: 17px; }
+    .stage-desc { font-size: 13px; }
+
+    /* Explain box */
+    .explain-box { font-size: 12.5px; padding: 12px 14px; }
+
+    /* Token line */
+    .token-line { padding: 10px; font-size: 12px; gap: 3px; }
+    .tok { padding: 3px 6px; font-size: 11px; }
+
+    /* Freq table — reduce padding, hide bar on very narrow, shrink */
+    .freq-table { font-size: 11px; }
+    .freq-table th { padding: 7px 8px; font-size: 10px; }
+    .freq-table td { padding: 7px 8px; }
+    .freq-bar { display: none; }
+    .freq-bar-wrap { gap: 6px; }
+
+    /* Panel */
+    .panel { padding: 12px; }
+    .panel-title { font-size: 10px; margin-bottom: 8px; }
+
+    /* Step bar — smaller circles */
+    .step-circle { width: 26px; height: 26px; font-size: 10px; }
+    .step-label { font-size: 9px; max-width: 50px; }
+    .step-connector { min-width: 12px; }
+
+    /* Merge log */
+    .merge-entry { padding: 8px 10px; font-size: 11px; gap: 8px; }
+
+    /* Theory */
+    .theory-h { font-size: 14px; }
+    .theory-p { font-size: 13px; }
+    .code-block { font-size: 11px; padding: 14px; }
+
+    /* Quiz */
+    .quiz-q { font-size: 14px; }
+    .quiz-opt { font-size: 13px; padding: 11px 13px; }
+  }
+
+  /* Slightly relax on mid-size (tablets / large phones landscape) */
+  @media (min-width: 601px) and (max-width: 900px) {
+    .shell { padding: 0 18px 60px; }
+    .card { padding: 20px; }
+    .demo-body { padding: 18px; }
+    .demo-config { padding: 16px 18px; }
+  }
 
   .panel {
     background: var(--surface2);
@@ -611,6 +779,7 @@
     font-weight: 600;
     margin-bottom: 14px;
     line-height: 1.5;
+    color: var(--text);
   }
   .quiz-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
   .quiz-opt {
@@ -620,17 +789,19 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    color: var(--text);
     transition: all .2s;
     text-align: left;
   }
-  .quiz-opt:hover { border-color: var(--border2); }
+  .quiz-opt:hover { border-color: var(--accent); background: rgba(124,107,255,.08); color: var(--accent2); }
   .quiz-opt.correct { background: rgba(107,255,228,.15); border-color: var(--accent4); color: var(--accent4); }
   .quiz-opt.wrong { background: rgba(255,107,157,.15); border-color: var(--token-col); color: var(--token-col); }
   .quiz-feedback {
     font-size: 13px;
     color: var(--text2);
-    padding: 10px 14px;
+    padding: 12px 16px;
     background: var(--surface2);
+    border: 1px solid var(--border2);
     border-radius: 8px;
     line-height: 1.6;
     display: none;
@@ -654,12 +825,6 @@
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-  /* ─── Responsive ─── */
-  @media(max-width: 600px) {
-    .demo-topbar { flex-direction: column; align-items: flex-start; }
-    .input-row { flex-direction: column; }
-  }
 
   /* ─── Pulse animation for active pair ─── */
   @keyframes pulse {
@@ -735,46 +900,60 @@
 
     <div class="card">
       <div class="card-title"><span class="dot" style="background:var(--accent4)"></span> The BPE Pipeline at a Glance</div>
-      <div style="display:flex;flex-wrap:wrap;gap:0;align-items:center;font-family:'DM Mono',monospace;font-size:13px;padding:8px 0;">
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">INPUT</div>
+      <div class="pipeline-flow" style="display:flex;flex-wrap:wrap;align-items:center;font-family:'DM Mono',monospace;font-size:13px;padding:8px 0;gap:0;">
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">INPUT</div>
           <div style="color:var(--text)">Raw Text</div>
         </div>
-        <div style="color:var(--text3);padding:0 10px;">→</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 1</div>
+        <div class="pipeline-arrow" style="color:var(--text3);padding:0 10px;">→</div>
+        <div class="pipeline-arrow-down" style="display:none;color:var(--text3);padding:4px 14px;font-size:11px;">↓</div>
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 1</div>
           <div style="color:var(--accent2)">Pre-tokenize</div>
           <div style="font-size:11px;color:var(--text3);margin-top:3px;">split on spaces</div>
         </div>
-        <div style="color:var(--text3);padding:0 10px;">→</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 2</div>
+        <div class="pipeline-arrow" style="color:var(--text3);padding:0 10px;">→</div>
+        <div class="pipeline-arrow-down" style="display:none;color:var(--text3);padding:4px 14px;font-size:11px;">↓</div>
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 2</div>
           <div style="color:var(--accent2)">Char-split</div>
           <div style="font-size:11px;color:var(--text3);margin-top:3px;">each word → chars</div>
         </div>
-        <div style="color:var(--text3);padding:0 10px;">→</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 3</div>
+        <div class="pipeline-arrow" style="color:var(--text3);padding:0 10px;">→</div>
+        <div class="pipeline-arrow-down" style="display:none;color:var(--text3);padding:4px 14px;font-size:11px;">↓</div>
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 3</div>
           <div style="color:var(--accent2)">Count Pairs</div>
           <div style="font-size:11px;color:var(--text3);margin-top:3px;">find most frequent</div>
         </div>
-        <div style="color:var(--text3);padding:0 10px;">→</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 4</div>
+        <div class="pipeline-arrow" style="color:var(--text3);padding:0 10px;">→</div>
+        <div class="pipeline-arrow-down" style="display:none;color:var(--text3);padding:4px 14px;font-size:11px;">↓</div>
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">STEP 4</div>
           <div style="color:var(--token-col)">Merge!</div>
           <div style="font-size:11px;color:var(--text3);margin-top:3px;">combine top pair</div>
         </div>
-        <div style="color:var(--text3);padding:0 10px;">→</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">REPEAT</div>
+        <div class="pipeline-arrow" style="color:var(--text3);padding:0 10px;">→</div>
+        <div class="pipeline-arrow-down" style="display:none;color:var(--text3);padding:4px 14px;font-size:11px;">↓</div>
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">REPEAT</div>
           <div style="color:var(--freq-col)">Until vocab full</div>
           <div style="font-size:11px;color:var(--text3);margin-top:3px;">save merge rules</div>
         </div>
-        <div style="color:var(--text3);padding:0 10px;">→</div>
-        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px 16px;text-align:center;">
-          <div style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">OUTPUT</div>
+        <div class="pipeline-arrow" style="color:var(--text3);padding:0 10px;">→</div>
+        <div class="pipeline-arrow-down" style="display:none;color:var(--text3);padding:4px 14px;font-size:11px;">↓</div>
+
+        <div class="pipeline-step" style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px 16px;text-align:center;">
+          <div class="step-label-top" style="color:var(--text3);font-size:10px;letter-spacing:.1em;margin-bottom:4px;">OUTPUT</div>
           <div style="color:var(--vocab-col)">Subword Vocab</div>
         </div>
+
       </div>
     </div>
 
@@ -788,18 +967,11 @@
   <div class="section" id="sec-walkthrough">
 
     <div class="demo-area">
-      <div class="demo-topbar">
-        <div class="demo-topbar-title">Interactive BPE Trainer</div>
-        <div class="btn-row">
-          <button class="btn" id="btnPrev" onclick="prevStep()" disabled>← Prev</button>
-          <button class="btn primary" id="btnNext" onclick="nextStep()">Next →</button>
-          <button class="btn" onclick="resetDemo()">↺ Reset</button>
-        </div>
-      </div>
-      <div class="demo-body">
 
-        <!-- Input row -->
-        <div class="input-row" id="inputRow">
+      <!-- ① Input config — always visible -->
+      <div class="demo-config" id="demoConfig">
+        <div class="demo-config-title">Configure Training</div>
+        <div class="input-row" style="margin-bottom:0">
           <div class="input-group">
             <label class="input-label">Training Text</label>
             <input type="text" id="inputText" value="low lower newest widest" placeholder="Enter training text...">
@@ -807,16 +979,28 @@
           <div class="input-group" style="max-width:160px">
             <label class="input-label" style="display:flex;align-items:center;gap:5px;">
               Max Merges
-              <span class="merge-hint-icon" title="">?</span>
+              <span class="merge-hint-icon">?</span>
             </label>
             <input type="number" id="inputMerges" value="10" min="1" max="30">
-            <div class="merge-hint">Each merge adds <strong>1 new token</strong> to the vocabulary. Real tokenizers run thousands of merges (GPT-2: ~50k, LLaMA: ~32k). Higher = larger vocab, shorter sequences.</div>
+            <div class="merge-hint">Each merge adds <strong>1 new token</strong> to vocabulary. GPT-2: ~50k, LLaMA: ~32k. Higher = larger vocab, shorter sequences.</div>
           </div>
-          <div style="display:flex;align-items:flex-end;">
-            <button class="btn primary" onclick="initDemo()">▶ Run BPE</button>
+          <div class="run-btn-wrap">
+            <button class="btn primary" id="btnRun" onclick="initDemo()">▶ Run BPE</button>
           </div>
         </div>
+      </div>
 
+      <!-- ② Navigation bar — only active after run -->
+      <div class="demo-topbar">
+        <div class="demo-topbar-title">Step-by-Step Walkthrough</div>
+        <div class="btn-row">
+          <button class="btn" id="btnPrev" onclick="prevStep()" disabled>← Prev</button>
+          <button class="btn primary" id="btnNext" onclick="nextStep()" disabled>Next →</button>
+          <button class="btn" id="btnReset" onclick="resetDemo()" disabled>↺ Reset</button>
+        </div>
+      </div>
+
+      <div class="demo-body">
         <!-- Step bar -->
         <div id="stepBarWrap" style="display:none">
           <div class="progress-wrap">
@@ -825,9 +1009,15 @@
           <div class="step-bar" id="stepBar"></div>
         </div>
 
-        <!-- Stage -->
-        <div class="stage" id="stage"></div>
+        <!-- Idle placeholder -->
+        <div id="stagePlaceholder" class="stage-placeholder">
+          <div style="font-size:36px;margin-bottom:12px;">▶</div>
+          <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text2);margin-bottom:6px;">Ready to train</div>
+          <div style="font-size:13px;color:var(--text3);">Enter your training text above and click <strong style="color:var(--accent2)">Run BPE</strong> to begin.</div>
+        </div>
 
+        <!-- Stage -->
+        <div class="stage" id="stage" style="display:none"></div>
       </div>
     </div>
 
@@ -1144,6 +1334,21 @@ let demoSteps = [];
 let demoIdx = 0;
 let mergeLogEntries = [];
 
+function setRunState(running) {
+  // inputs
+  document.getElementById('inputText').disabled = running;
+  document.getElementById('inputMerges').disabled = running;
+  // run button
+  document.getElementById('btnRun').disabled = running;
+  // reset button
+  document.getElementById('btnReset').disabled = !running;
+  // prev/next managed by renderStep; just ensure they're off before first render
+  if (!running) {
+    document.getElementById('btnPrev').disabled = true;
+    document.getElementById('btnNext').disabled = true;
+  }
+}
+
 function initDemo() {
   const text = document.getElementById('inputText').value.trim() || 'low lower newest widest';
   const maxMerges = Math.min(parseInt(document.getElementById('inputMerges').value)||10, 30);
@@ -1153,6 +1358,9 @@ function initDemo() {
   document.getElementById('mergeHistCard').style.display = 'none';
   document.getElementById('mergeLog').innerHTML = '';
   document.getElementById('stepBarWrap').style.display = 'block';
+  document.getElementById('stagePlaceholder').style.display = 'none';
+  document.getElementById('stage').style.display = 'block';
+  setRunState(true);
   buildStepBar();
   renderStep();
 }
@@ -1201,7 +1409,7 @@ function nextStep() {
 function renderStep() {
   updateStepBar();
   document.getElementById('btnPrev').disabled = demoIdx === 0;
-  document.getElementById('btnNext').disabled = demoIdx === demoSteps.length-1;
+  document.getElementById('btnNext').disabled = demoIdx === demoSteps.length - 1;
 
   const s = demoSteps[demoIdx];
   const stage = document.getElementById('stage');
@@ -1459,15 +1667,16 @@ function resetDemo() {
   demoIdx = 0;
   mergeLogEntries = [];
   document.getElementById('stepBarWrap').style.display = 'none';
+  document.getElementById('stage').style.display = 'none';
   document.getElementById('stage').innerHTML = '';
+  document.getElementById('stagePlaceholder').style.display = 'flex';
   document.getElementById('mergeHistCard').style.display = 'none';
   document.getElementById('mergeLog').innerHTML = '';
-  document.getElementById('btnPrev').disabled = true;
-  document.getElementById('btnNext').disabled = false;
+  setRunState(false);
 }
 
-// Run on page load with default
-window.addEventListener('load', () => { initDemo(); });
+// Initialize idle state on page load
+window.addEventListener('load', () => { setRunState(false); });
 
 // ─────────────────────────────────────────────
 //  QUIZ
