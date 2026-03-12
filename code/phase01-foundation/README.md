@@ -11,3 +11,7 @@ Show me how to set up a development environment using uv on Mac so that I
 can run Python 3.11, PyTorch, Jupyter, and Weights & Biases (W&B).
 ```
 and follow the steps to complete the environment setup.
+
+2. Learn about Byte Pair Encoding (BPE) using the interactive explainer:
+[learn-bpe-learn-byte-pair-encoding.html](docs/learn-bpe-learn-byte-pair-encoding.html)
+Also available online [here](https://tools.ziliworks.com.au/learn-bpe-learn-byte-pair-encoding).
